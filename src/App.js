@@ -11,7 +11,10 @@ import {
 export default function App() {
   return (
     <Router>
-      <div>
+      <nav className="navbar"style={{backgroundColor:"#17405c", height:"auto"}}>
+        <a class="navbar-brand" href="#">THE VILLAGE</a>
+      </nav>
+      <div className="container-fluid" style={{height:"100vh"}}>
         <ul>
           <li>
             <Link to="/">Home</Link>
@@ -35,6 +38,7 @@ export default function App() {
             <Home />
           </Route>
         </Switch>
+        <button type="button" className="btn btn-primary">Primary</button>
       </div>
     </Router>
   );
