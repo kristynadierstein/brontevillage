@@ -8,13 +8,57 @@ import {
   useParams
 } from "react-router-dom";
 
+import SuitesCard from './components/cards';
+
+const provSuites = [
+  {
+      id: '1401',
+      size: '1073',
+      rooms:'2',
+      den: '1',
+      description:'facing interal courtyard',
+      imageURL: 'https://via.placeholder.com/362x200',
+  },
+  {
+      id: '1402',
+      size: '456',
+      rooms:'6',
+      den: '2',
+      description: 'balcony',
+      imageURL: 'https://via.placeholder.com/362x200',
+  },
+  {
+      id: '1400',
+      size: '555',
+      rooms:'4',
+      den: '2',
+      description: 'balcony',
+      imageURL: 'https://via.placeholder.com/362x200',
+  },
+  {
+      id: '1406',
+      size: '666',
+      rooms:'4',
+      den: '2',
+      description: 'balcony',
+      imageURL: 'https://via.placeholder.com/362x200',
+  },
+];
+
 export default function App() {
   return (
     <Router>
-      <nav className="navbar"style={{backgroundColor:"#17405c", height:"auto"}}>
-        <a class="navbar-brand" href="#">THE VILLAGE</a>
+      <nav className="navbar">
+        <a className="navbar-brand" href="#">THE VILLAGE</a>
       </nav>
       <div className="container-fluid" style={{height:"100vh"}}>
+        <div className="row">
+          <div className="col">
+            <div className="card-deck">
+              {provSuites.map(suite => <SuitesCard {...suite} /> )}
+            </div>
+          </div>
+        </div>
         <ul>
           <li>
             <Link to="/">Home</Link>
@@ -38,7 +82,6 @@ export default function App() {
             <Home />
           </Route>
         </Switch>
-        <button type="button" className="btn btn-primary">Primary</button>
       </div>
     </Router>
   );
@@ -90,3 +133,6 @@ function Topic() {
   let { topicId } = useParams();
   return <h3>Requested topic ID: {topicId}</h3>;
 }
+
+
+
