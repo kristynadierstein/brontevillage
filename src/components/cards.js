@@ -1,7 +1,7 @@
 import React from "react";
 
 const SuitesCard = ({ title, size, rooms, den, description }) => (
-  <div className="card">
+  <div className="card mt-5">
     <img className="card-img-top" src="https://via.placeholder.com/362x200" alt="Card image cap" />
     <div className="card-body">
       <h5 className="card-title">{title}</h5>
