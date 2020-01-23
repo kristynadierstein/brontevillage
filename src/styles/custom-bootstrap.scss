@@ -1,0 +1,10 @@
+// Override default variables before the import
+// example: 
+// $body-bg: #000;
+
+
+
+
+// Import Bootstrap and its default variables
+//!!!!! prefix imports from node_modules with ~ as!!!!
+@import '~bootstrap/scss/bootstrap.scss';

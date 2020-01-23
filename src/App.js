@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -8,85 +8,65 @@ import {
   useParams
 } from "react-router-dom";
 
-export default function App() {
-  return (
-    <Router>
-      <nav className="navbar"style={{backgroundColor:"#17405c", height:"auto"}}>
-        <a class="navbar-brand" href="#">THE VILLAGE</a>
-      </nav>
-      <div className="container-fluid" style={{height:"100vh"}}>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/topics">Topics</Link>
-          </li>
-        </ul>
 
-        <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/topics">
-            <Topics />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-        <button type="button" className="btn btn-primary">Primary</button>
-      </div>
-    </Router>
-  );
+
+import SuitesCard from './components/cards';
+
+
+
+class App extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      suites: [],
+    };
+  }
+
+  componentDidMount (){
+    fetch('https://api.airtable.com/v0/appMw45DWCwsT5CvG/Suites?api_key=keyItT7KyJ8jjlQyQ')
+    .then((resp) => resp.json())
+    .then(data => {
+      console.log(data);
+      this.setState({ suites: data.records });
+    }).catch(err => {
+      // Error :()
+    });
+  }
+
+  render() {
+    return (
+      <Router>
+        <React.Fragment>
+          <nav className="navbar">
+            <a className="navbar-brand" href="#">THE VILLAGE</a>
+          </nav>
+          <div className="container-fluid" style={{height:"100vh"}}>
+            <div className="row">
+              <div className="col">
+                <div className="card-deck">
+                  {this.state.suites.map(suite => <SuitesCard {...suite.fields} key={suite.fields.id} /> )}
+                </div>
+              </div>
+            </div>
+              <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/about">About</Link>
+                </li>
+                <li>
+                  <Link to="/topics">Topics</Link>
+                </li>
+              </ul>
+            </div>
+          </React.Fragment>
+          </Router>
+      );
+  }
 }
 
-function Home() {
-  return <h2>Home</h2>;
-}
+export default App
 
-function About() {
-  return <h2>About</h2>;
-}
 
-function Topics() {
-  let match = useRouteMatch();
 
-  return (
-    <div>
-      <h2>Topics</h2>
-
-      <ul>
-        <li>
-          <Link to={`${match.url}/components`}>Components</Link>
-        </li>
-        <li>
-          <Link to={`${match.url}/props-v-state`}>
-            Props v. State
-          </Link>
-        </li>
-      </ul>
-
-      {/* The Topics page has its own <Switch> with more routes
-          that build on the /topics URL path. You can think of the
-          2nd <Route> here as an "index" page for all topics, or
-          the page that is shown when no topic is selected */}
-      <Switch>
-        <Route path={`${match.path}/:topicId`}>
-          <Topic />
-        </Route>
-        <Route path={match.path}>
-          <h3>Please select a topic.</h3>
-        </Route>
-      </Switch>
-    </div>
-  );
-}
-
-function Topic() {
-  let { topicId } = useParams();
-  return <h3>Requested topic ID: {topicId}</h3>;
-}
