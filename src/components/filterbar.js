@@ -1,4 +1,9 @@
+//import libraries
 import React from "react";
+
+//import components
+import Filter from "../components/filter.js"
+
 
 class FilterBar extends React.Component {
 
@@ -11,6 +16,7 @@ class FilterBar extends React.Component {
           </div>
           <div>
             <h3>Room type</h3>
+            <Filter />
             
           </div>
         </div>
