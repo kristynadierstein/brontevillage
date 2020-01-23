@@ -8,7 +8,11 @@ import {
   useParams
 } from "react-router-dom";
 
+//import imagery
+import Logo from "./images/Logo_Bronte_Village.png";
 
+//import components
+import FilterBar from "./components/filterbar";
 
 import SuitesCard from './components/cards';
 
@@ -38,15 +42,18 @@ class App extends Component {
       <Router>
         <React.Fragment>
           <nav className="navbar">
-            <a className="navbar-brand" href="#">THE VILLAGE</a>
+          
+            <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
           </nav>
-          <div className="container-fluid" style={{height:"100vh"}}>
+          <div>
+            < FilterBar />
+          </div>
+          <div className="container-fluid padding-main-container">
             <div className="row">
-              <div className="col">
-                <div className="card-deck">
-                  {this.state.suites.map(suite => <SuitesCard {...suite.fields} key={suite.fields.id} /> )}
-                </div>
-              </div>
+
+                  {this.state.suites.map(suite => 
+                    
+                    <SuitesCard  {...suite.fields} key={suite.fields.id} /> )}
             </div>
               <ul>
                 <li>

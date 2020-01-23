@@ -1,7 +1,8 @@
 body {
-  color: $gold;
-  background-color: $bodyGold;
+  color: $fontGoldDark;
+  background-color: $backgroundGold;
+  font-family: $montserrat-regular;
   a {
-    color: $gold;
+    color: $fontGoldDark;
   }
 }
