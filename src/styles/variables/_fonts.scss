@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'montserrat regular';
+  src: url('../../fonts/Montserrat-Regular.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'montserrat light italic';
+  src: url('../../fonts/Montserrat-LightItalic.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'montserrat light';
+  src: url('../../fonts/Montserrat-Light.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'unna italic';
+  src: url('../../fonts/Unna-Italic.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'unna regular';
+  src: url('../../fonts/Unna-Regular.ttf') format('opentype');
+}
+
+
+$montserrat-regular: 'montserrat regular';
+$montserrat-light: 'montserrat light';
+$monsterrat-light-italic: 'montserrat light italic';
+
+$unna-regular: 'unna regular';
+$unnar-italic: 'unna italic';
+
+// Reset some basic elements
+
+body, h1, h2, h3, h4, h5, h6,
+p, blockquote, pre, hr,
+dl, dd, ol, ul, figure {
+  margin: 0;
+  padding: 0;
+}
+
+html{
+  box-sizing: border-box;
+  font-size: 16px; // 16px = 1rem
+}
+
+h1 {
+  font-family: $unna-regular;
+  font-weight: 100;
+  font-size: 2rem;
+  letter-spacing: .2rem;
+}
