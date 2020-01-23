@@ -9,6 +9,10 @@ class FilterBar extends React.Component {
           <div className="flex-column">
             <h1> Find your home</h1>
           </div>
+          <div>
+            <h3>Room type</h3>
+            
+          </div>
         </div>
       </React.Fragment>
     )
