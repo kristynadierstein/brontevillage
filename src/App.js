@@ -46,7 +46,7 @@ class App extends Component {
             <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
           </nav>
           <div>
-            < FilterBar {...this.state.suites}/>
+            < FilterBar />
           </div>
           <div className="container-fluid padding-main-container">
             <div className="row">
