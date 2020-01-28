@@ -22,8 +22,12 @@ class App extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      suites: [],
+      suites: null,
+      filteredResults: null,
+      filterChecked: false
     };
+
+    this.toggleCheckedOneBedroom = this.toggleCheckedOneBedroom.bind(this)
   }
 
   componentDidMount (){
@@ -31,13 +35,47 @@ class App extends Component {
     .then((resp) => resp.json())
     .then(data => {
       console.log(data);
-      this.setState({ suites: data.records });
+      this.setState({
+        suites: data.records,
+        filteredResults: data.records
+      });
     }).catch(err => {
       // Error :()
     });
   }
 
+  toggleCheckedOneBedroom(e) {
+    console.log(e.target);
+    console.log(e.target.id)
+    if (e.target.checked) {
+      // Show 1 bedroom suites if checked
+      const results = this.state.suites.filter(suite => suite.fields.rooms === e.target.id)
+      console.log('Showing 1 bedroom suites:', results)
+      this.setState({
+        filterChecked: true,
+        filteredResults: results
+      })
+    } else {
+      // Show all suites if unchecked
+      console.log('Showing all suites - no filter:', this.state.suites)
+      this.setState({
+        filterChecked: false,
+        filteredResults: this.state.suites
+      })
+    }
+  }
+  
+  
+  
   render() {
+    // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
+    const { suites, filterChecked } = this.state;
+
+    //this is the way how to do it with hooks
+    // const [state, setState] = useState()
+
+
+
     return (
       <Router>
         <React.Fragment>
@@ -46,12 +84,20 @@ class App extends Component {
             <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
           </nav>
           <div>
-            < FilterBar />
+            {!suites && 'loading...'}
+            {suites && (
+              <FilterBar 
+                suites={suites}
+                toggleCheckedOneBedroom={this.toggleCheckedOneBedroom}
+                checked={filterChecked}
+             />
+            )}
           </div>
           <div className="container-fluid padding-main-container">
             <div className="row">
+                  {!suites && 'loading...'}
 
-                  {this.state.suites.map(suite => 
+                  {suites && this.state.filteredResults.map(suite => 
                     
                     <SuitesCard  {...suite.fields} key={suite.fields.id} /> )}
             </div>

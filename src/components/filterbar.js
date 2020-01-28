@@ -9,82 +9,110 @@ class FilterBar extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      rooms: [], 
       checked: false,
+      suites: this.props.suites 
     }    
   }
 
-  componentDidMount (){
-    fetch('https://api.airtable.com/v0/appMw45DWCwsT5CvG/Suites?api_key=keyItT7KyJ8jjlQyQ')
-    .then((resp) => resp.json())
-    .then(data => {
-      console.log(data);
-      this.setState({ rooms: data.records });
-    }).catch(err => {
-      // Error :()
-    });
-  }
+
   
-  // handleClick(){
-  //   this.props.toggleChecked(this.props.room)
-  // }
-
-  // toggleChecked(currentSelection){
-  //   const NewRooms = this.state.rooms.map(room => {
-  //     if (room.rooms === currentSelection) {
-  //       room.checked = !room.checked
-  //     }
-  //     return room
-  //   })
-  //   this.setState({rooms: NewRooms, checked: this.toggleChecked})
-  // }
-
-
   render(){
     let rooms = []
-    let roomsFlat = []
-    this.state.rooms.map((record) => {
+    // let roomsFlat = []
+    // let squareMeters = []
+    // let squareMetersFlat = []
+
+    const { suites } = this.props;
+    const { } = this.state;
+
+    this.props.suites.map((record) => {
       rooms.push({rooms: record.fields.rooms})
     })
+
+    // this.state.suites.map((record) => {
+    //   squareMeters.push({size: record.fields.size })
+    // })
+    // console.log(squareMeters)
     
-    //geting an array of how many bedrooms are in the selection filter, adding only unique values to array
-    rooms.map((room) => {
-     !roomsFlat.includes(room.rooms) && roomsFlat.push(room.rooms)
-    })
+    // //geting an array of how many bedrooms are in the selection filter, adding only unique values to array
+    // rooms.map((room) => {
+    //  !roomsFlat.includes(room.rooms) && roomsFlat.push(room.rooms)
+    // })
 
-    roomsFlat.forEach((roomFlat) => {
-      rooms.push({room: roomFlat, checked: false})
-    })
-
-
-
-
+    // console.log(roomsFlat)
+    // squareMeters.map((unit) => {
+    //   !squareMetersFlat.includes(unit.size) && squareMetersFlat.push(unit.size)
+    // })
+    // console.log(squareMetersFlat)
 
     return(
       <React.Fragment>
         <div className="filter flex-row">
+          
+          
           <div className="flex-column">
             <h1> Find your home </h1>
           </div>
+          
+          
           <div className="div-align-center">
             <div className="flex-row align-items-center filter-margins" >
               <h3 style={{width:20 + '%'}}>Room type</h3>
+                <div className="flex-column">
+                  <ul>
+                      <li className="checkbox-list">
+                        <input
+                          type="checkbox"
+                          id='1'
+                          checked={this.props.checked}
+                          onChange={e => this.props.toggleCheckedOneBedroom(e)}
+                          className="checkboxes-filters"
+                        />
+                        <span>1 bedroom </span>
+                      </li>
+                  
+                    {/*this.props.suites.map((room, index) => {
+                    return (
+                      <div>
+                        <li key={index} className="checkbox-list">
+                        <input
+                          type="checkbox"
+                          value={1}
+                          checked={this.checked.suites}
+                          onChange={e => this.props.toggleCheckedOneBedroom(e)}
+                          className="checkboxes-filters"
+                        />
+                        <span>1 bedroom </span>
+                        </li>
+                      </div>
+                    ) 
+                    } ) */}
+                  </ul>
+                </div>
+              </div>
+
+
+
+   
+            {/* <div className="flex-row align-items-center filter-margins" >
+              <h3 style={{width:20 + '%'}}>Square footage</h3>
+
               <div className="flex-column">
                 <ul>
-                  {roomsFlat.map((room, index) => {
+                  {squareMetersFlat.map((size, index) => {
                   return (
                     <div>
                       <li key={index} className="checkbox-list">
-                      <input type="checkbox" className="checkboxes-filters"/>
-                      <span>{room} bedroom </span>
+                      <input type="checkbox" value={size} checked={this.state.checked} onChange={this.toggleChecked.bind} onClick={this.handleCheck.bind} className="checkboxes-filters"/>
+                      <span>{size} m2 </span>
                       </li>
                   </div>
                   ) 
                 } )}
                 </ul>
               </div>
-            </div>
-            <Filter />
+            </div> */}
+
             
           </div>
         </div>
