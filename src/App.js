@@ -23,11 +23,17 @@ class App extends Component {
     super(props);
     this.state = {
       suites: null,
-      filteredResults: null,
-      filterChecked: false
+      filteredResults: null, 
+      filteredBedResults: null,
+      filteredFootageResults: null, 
+      filterBedChecked: false, 
+      filterFootageChecked: false, 
+      currentBedroomFilter: null, 
+      currentFootageFilter: null
     };
 
-    this.toggleCheckedOneBedroom = this.toggleCheckedOneBedroom.bind(this)
+    this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
+    this.toggleCheckedFootageFilter = this.toggleCheckedFootageFilter.bind(this)
   }
 
   componentDidMount (){
@@ -44,29 +50,53 @@ class App extends Component {
     });
   }
 
-  toggleCheckedOneBedroom(e) {
+  toggleCheckedBedFilter(e) {
     console.log(e.target);
     console.log(e.target.id)
     if (e.target.checked) {
-      // Show 1 bedroom suites if checked
-      const results = this.state.suites.filter(suite => suite.fields.rooms === e.target.id)
-      console.log('Showing 1 bedroom suites:', results)
+      // Show sx bedroom suites if checked
+      let results = []
+      results = this.state.suites.filter(suite => suite.fields.rooms === e.target.id)
+      console.log( 'Showing filtered suites with X bedrooms:', results)
       this.setState({
-        filterChecked: true,
-        filteredResults: results
+        filterBedChecked: true,
+        filteredBedResults: results,
+        currentBedroomFilter: e.target.id
       })
     } else {
       // Show all suites if unchecked
       console.log('Showing all suites - no filter:', this.state.suites)
       this.setState({
-        filterChecked: false,
-        filteredResults: this.state.suites
+        filterBedChecked: false,
+        filteredBedResults: this.state.suites,
+        currentBedroomFilter: null
       })
     }
   }
-  
-  
-  
+
+  toggleCheckedFootageFilter(e) {
+    console.log(e.target)
+    console.log(e.target.id)
+    if (e.target.checked) {
+      //show current square meter filter if checked
+      let results = this.state.suites.filter(suite => suite.fields.size === e.target.id)
+      console.log( 'Showing filtered suites with X square meter:', results)
+      this.setState({
+        filterFootageChecked: true,
+        filteredFootageResults: results, 
+        currentFootageFilter: e.target.id
+      })
+    } else {
+      console.log( 'Showing all results - no filter:', this.state.suites)
+      this.setState({
+        filterFootageChecked: false, 
+        filteredFootageResults: this.state.suites, 
+        currentFootageFilter: null
+      })
+    }
+  }
+
+    
   render() {
     // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
     const { suites, filterChecked } = this.state;
@@ -88,8 +118,10 @@ class App extends Component {
             {suites && (
               <FilterBar 
                 suites={suites}
-                toggleCheckedOneBedroom={this.toggleCheckedOneBedroom}
-                checked={filterChecked}
+                toggleCheckedBedFilter={this.toggleCheckedBedFilter}
+                currentBedroomFilter={this.state.currentBedroomFilter}
+                toggleCheckedFootageFilter={this.toggleCheckedFootageFilter}
+                currentFootageFilter={this.state.currentFootageFilter}
              />
             )}
           </div>
