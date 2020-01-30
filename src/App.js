@@ -24,16 +24,11 @@ class App extends Component {
     this.state = {
       suites: null,
       filteredResults: null, 
-      filteredBedResults: null,
-      filteredFootageResults: null, 
       filterBedChecked: false, 
-      filterFootageChecked: false, 
       currentBedroomFilter: null, 
-      currentFootageFilter: null
     };
 
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
-    this.toggleCheckedFootageFilter = this.toggleCheckedFootageFilter.bind(this)
   }
 
   componentDidMount (){
@@ -60,7 +55,7 @@ class App extends Component {
       console.log( 'Showing filtered suites with X bedrooms:', results)
       this.setState({
         filterBedChecked: true,
-        filteredBedResults: results,
+        filteredResults: results,
         currentBedroomFilter: e.target.id
       })
     } else {
@@ -74,27 +69,6 @@ class App extends Component {
     }
   }
 
-  toggleCheckedFootageFilter(e) {
-    console.log(e.target)
-    console.log(e.target.id)
-    if (e.target.checked) {
-      //show current square meter filter if checked
-      let results = this.state.suites.filter(suite => suite.fields.size === e.target.id)
-      console.log( 'Showing filtered suites with X square meter:', results)
-      this.setState({
-        filterFootageChecked: true,
-        filteredFootageResults: results, 
-        currentFootageFilter: e.target.id
-      })
-    } else {
-      console.log( 'Showing all results - no filter:', this.state.suites)
-      this.setState({
-        filterFootageChecked: false, 
-        filteredFootageResults: this.state.suites, 
-        currentFootageFilter: null
-      })
-    }
-  }
 
     
   render() {
@@ -103,7 +77,6 @@ class App extends Component {
 
     //this is the way how to do it with hooks
     // const [state, setState] = useState()
-
 
 
     return (
@@ -120,8 +93,6 @@ class App extends Component {
                 suites={suites}
                 toggleCheckedBedFilter={this.toggleCheckedBedFilter}
                 currentBedroomFilter={this.state.currentBedroomFilter}
-                toggleCheckedFootageFilter={this.toggleCheckedFootageFilter}
-                currentFootageFilter={this.state.currentFootageFilter}
              />
             )}
           </div>

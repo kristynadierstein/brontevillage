@@ -17,38 +17,17 @@ class FilterBar extends React.Component {
 
   render(){
     let rooms = [];
-    let squareSizes = [];
-    let squareSizesIntegers = []
-  
-
-
 
     const { suites } = this.props;
     const { } = this.state;
 
     this.props.suites.map((record) => {
       rooms.push(record.fields.rooms)
-      squareSizes.push(record.fields.size)
     })
 
     const distinctBedrooms = [...new Set(rooms)];
-    const distinctSquareSizes = [...new Set(squareSizes)];
-
-    squareSizes.map(squareSize => {
-      const squareSizesInt = parseInt(squareSize, 10)
-      squareSizesIntegers.push(squareSizesInt)
-    })
-    console.log(squareSizesIntegers)
-
-
-   let bigSuites = squareSizesIntegers.filter(e => e > 1000)
-   let mediumSuites = squareSizesIntegers.filter(e => e > 800 && e < 1000)
-   let smallSuites = squareSizesIntegers.filter(e => e < 800)
-
-   console.log(bigSuites)
-   console.log(mediumSuites)
-   console.log(smallSuites)
-
+ 
+ 
     return(
       <React.Fragment>
         <div className="filter flex-row">
@@ -79,54 +58,6 @@ class FilterBar extends React.Component {
                   </ul>
                 </div>
               </div>
-
-              <div className="flex-row align-items-center filter-margins" >
-              <h3 style={{width:20 + '%'}}>Square footage</h3>
-                <div className="flex-column">
-                  <ul>
-                    {distinctSquareSizes.map(distinctSquareSize => 
-                      <li className="checkbox-list">
-                        <input
-                          type="checkbox"
-                          id={distinctSquareSize}
-                          checked={this.props.currentFootageFilter === distinctSquareSize}
-                          onChange={e => this.props.toggleCheckedFootageFilter(e)}
-                          className="checkboxes-filters"
-                        />
-                        <span> {distinctSquareSize} m2 </span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-
-
-
-
-
-
-{/* 
-              <div className="flex-row align-items-center filter-margins" >
-              <h3 style={{width:20 + '%'}}>Square footage</h3>
-                <div className="flex-column">
-                  <ul>
-                    {distinctSquareSizes.map(distinctSquareSize => 
-                      <li className="checkbox-list">
-                        <input
-                          type="checkbox"
-                          id={distinctSquareSize}
-                          checked={this.props.currentFootageFilter === distinctSquareSize}
-                          onChange={e => this.props.toggleCheckedFootageFilter(e)}
-                          className="checkboxes-filters"
-                        />
-                        <span> {distinctSquareSize} m2 </span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div> */}
-
-
           </div>
         </div>
       </React.Fragment>
