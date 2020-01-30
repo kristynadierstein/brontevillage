@@ -9,48 +9,55 @@ class FilterBar extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      suites: [], 
-    }
-    
+      checked: false,
+      suites: this.props.suites 
+    }    
   }
 
-  componentDidMount (){
-    fetch('https://api.airtable.com/v0/appMw45DWCwsT5CvG/Suites?api_key=keyItT7KyJ8jjlQyQ')
-    .then((resp) => resp.json())
-    .then(data => {
-      console.log(data);
-      this.setState({ suites: data.records });
-    }).catch(err => {
-      // Error :()
-    });
-  }
 
   render(){
-    console.log(this.state)
-    let rooms = []
-    let roomsFlat = []
-    this.state.suites.map((record) => {
-      rooms.push({rooms: record.fields.rooms})
-    })
-    console.log(rooms)
-    
-    //geting an array of how many bedrooms are in the selection filter, adding only unique values to array
-    rooms.map((room) => {
-     !roomsFlat.includes(room.rooms) && roomsFlat.push(room.rooms)
+    let rooms = [];
+
+    const { suites } = this.props;
+    const { } = this.state;
+
+    this.props.suites.map((record) => {
+      rooms.push(record.fields.rooms)
     })
 
-    console.log(roomsFlat)
-
+    const distinctBedrooms = [...new Set(rooms)];
+ 
+ 
     return(
       <React.Fragment>
         <div className="filter flex-row">
+          
+          
           <div className="flex-column">
             <h1> Find your home </h1>
           </div>
-          <div>
-            <h3>Room type</h3>
-            <Filter />
-            
+          
+          
+          <div className="div-align-center">
+            <div className="flex-row align-items-center filter-margins" >
+              <h3 style={{width:20 + '%'}}>Room type</h3>
+                <div className="flex-column">
+                  <ul>
+                    {distinctBedrooms.map(distinctBedroom => 
+                      <li className="checkbox-list">
+                        <input
+                          type="checkbox"
+                          id={distinctBedroom}
+                          checked={this.props.currentBedroomFilter === distinctBedroom}
+                          onChange={e => this.props.toggleCheckedBedFilter(e)}
+                          className="checkboxes-filters"
+                        />
+                        <span> {distinctBedroom} bedroom </span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
           </div>
         </div>
       </React.Fragment>
