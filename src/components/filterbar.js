@@ -37,7 +37,7 @@ class FilterBar extends React.Component {
             <h1> Find your home </h1>
           </div>
           
-          
+          {/* Bedroom filter */}
           <div className="div-align-center">
             <div className="flex-row align-items-center filter-margins" >
               <h3 style={{width:20 + '%'}}>Room type</h3>
@@ -58,6 +58,62 @@ class FilterBar extends React.Component {
                   </ul>
                 </div>
               </div>
+
+              {/* Square footage filters */}
+              <div className="flex-row align-items-center filter-margins" >
+              <h3 style={{width:20 + '%'}}>Square footage</h3>
+                <div className="flex-column">
+                  <ul>
+                    <li className="checkbox-list">
+                      <input
+                        type="checkbox"
+                        id="600"
+                        checked={this.props.checked}
+                        onChange={e => this.props.toggleCheckedFootageSmall(e)}
+                        className="checkboxes-filters"
+                      />
+                        <span> 600 - 800 </span>
+                      </li>
+                  <li className="checkbox-list">
+                        <input
+                          type="checkbox"
+                          id="800"
+                          checked={this.props.checked}
+                          onChange={e => this.props.toggleCheckedFootageMedium(e)}
+                          className="checkboxes-filters"
+                        />
+                        <span> 800 - 1000  </span>
+                      </li>
+                      <li className="checkbox-list">
+                        <input
+                          type="checkbox"
+                          id="1000"
+                          checked={this.props.checked}
+                          onChange={e => this.props.toggleCheckedFootageBig(e)}
+                          className="checkboxes-filters"
+                        />
+                        <span> 1000+  </span>
+                      </li>
+                  </ul>
+                </div>
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           </div>
         </div>
       </React.Fragment>
