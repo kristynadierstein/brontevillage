@@ -30,15 +30,13 @@ class FilterBar extends React.Component {
  
     return(
       <React.Fragment>
-        <div className="filter flex-row">
-          
-          
+        <div className="filter flex-row">  
           <div className="flex-column">
             <h1> Find your home </h1>
           </div>
           
-          {/* Bedroom filter */}
           <div className="div-align-center">
+            {/* Bedroom filter */}
             <div className="flex-row align-items-center filter-margins" >
               <h3 style={{width:20 + '%'}}>Room type</h3>
                 <div className="flex-column">
@@ -47,9 +45,10 @@ class FilterBar extends React.Component {
                       <li className="checkbox-list">
                         <input
                           type="checkbox"
+                          name={`bedroom-${distinctBedroom}`}
                           id={distinctBedroom}
-                          checked={this.props.currentBedroomFilter === distinctBedroom}
-                          onChange={e => this.props.toggleCheckedBedFilter(e)}
+                          checked={this.props.filterBedChecked} 
+                          onChange={e => this.props.handleToggle(e)}
                           className="checkboxes-filters"
                         />
                         <span> {distinctBedroom} bedroom </span>
@@ -60,60 +59,44 @@ class FilterBar extends React.Component {
               </div>
 
               {/* Square footage filters */}
-              <div className="flex-row align-items-center filter-margins" >
+            <div className="flex-row align-items-center filter-margins" >
               <h3 style={{width:20 + '%'}}>Square footage</h3>
-                <div className="flex-column">
-                  <ul>
+              <div className="flex-column">
+                <ul>
+                  <li className="checkbox-list">
+                    <input
+                      type="checkbox"
+                      name="footage-small"
+                      id="600"
+                      checked={this.props.smallFootageFilter}
+                      onChange={e => this.props.handleToggle(e)}
+                      className="checkboxes-filters"
+                    />
+                      <span> 600 - 800 </span>
+                    </li>
+                  {/* <li className="checkbox-list">
+                      <input
+                        type="checkbox"
+                        id="800"
+                        checked={this.props.currentFootageFilter === 800}
+                        onChange={e => this.props.toggleCheckedFootageMedium(e)}
+                        className="checkboxes-filters"
+                      />
+                      <span> 800 - 1000  </span>
+                    </li>
                     <li className="checkbox-list">
                       <input
                         type="checkbox"
-                        id="600"
-                        checked={this.props.checked}
-                        onChange={e => this.props.toggleCheckedFootageSmall(e)}
+                        id="1000"
+                        checked={this.props.currentFootageFilter}
+                        onChange={e => this.props.toggleCheckedFootageBig(e)}
                         className="checkboxes-filters"
                       />
-                        <span> 600 - 800 </span>
-                      </li>
-                  <li className="checkbox-list">
-                        <input
-                          type="checkbox"
-                          id="800"
-                          checked={this.props.checked}
-                          onChange={e => this.props.toggleCheckedFootageMedium(e)}
-                          className="checkboxes-filters"
-                        />
-                        <span> 800 - 1000  </span>
-                      </li>
-                      <li className="checkbox-list">
-                        <input
-                          type="checkbox"
-                          id="1000"
-                          checked={this.props.checked}
-                          onChange={e => this.props.toggleCheckedFootageBig(e)}
-                          className="checkboxes-filters"
-                        />
-                        <span> 1000+  </span>
-                      </li>
-                  </ul>
-                </div>
+                      <span> 1000+  </span>
+                    </li> */}
+                </ul>
               </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            </div>
           </div>
         </div>
       </React.Fragment>

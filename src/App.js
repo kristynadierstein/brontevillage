@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams
-} from "react-router-dom";
+
 
 //import imagery
 import Logo from "./images/Logo_Bronte_Village.png";
@@ -29,19 +22,21 @@ class App extends Component {
       currentBedroomFilter: null, 
       filterFootageChecked: false, 
       filteredFootageSmallResults: null, 
-      filteredFootageMediumResults: null, 
-      filteredFootageBigResults: null, 
-      currentFootageFilter: null
+      smallFootageFilter: null
+      // filteredFootageMediumResults: null, 
+      // filteredFootageBigResults: null, 
     };
 
+    this.handleToggle = this.handleToggle.bind(this)
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
     this.toggleCheckedFootageSmall = this.toggleCheckedFootageSmall.bind(this)
-    this.toggleCheckedFootageMedium = this.toggleCheckedFootageMedium.bind(this)
-    this.toggleCheckedFootageBig = this.toggleCheckedFootageBig.bind(this)
+    this.finalFilter = this.finalFilter.bind(this)
+    // this.toggleCheckedFootageMedium = this.toggleCheckedFootageMedium.bind(this)
+    // this.toggleCheckedFootageBig = this.toggleCheckedFootageBig.bind(this)
   }
 
   componentDidMount (){
-    fetch('https://api.airtable.com/v0/appMw45DWCwsT5CvG/Suites?api_key=keyItT7KyJ8jjlQyQ')
+    fetch('https://api.airtable.com/v0/appcGhlPGfDOCALss/Suites?api_key=keyItT7KyJ8jjlQyQ')
     .then((resp) => resp.json())
     .then(data => {
       console.log(data);
@@ -54,18 +49,50 @@ class App extends Component {
     });
   }
 
-  toggleCheckedBedFilter(e) {
-    console.log(e.target);
-    console.log(e.target.id)
-    if (e.target.checked) {
+  /* STEP 1
+    Hanlder function that:
+      - Gets triggered when any checkbox is toggled
+      - Detects which filter type the event came from (using e.target.name)
+      - From the filter type, which filter was triggered
+      - Was the filter checked?
+      - Are both, or only one filer, or neither filter types applied?
+      - Using the above conditions trigger either 2A or 2B
+
+  */
+
+  
+  handleToggle(e) {
+    const { id, name, checked } = e.target
+    console.log(e.target.checked)
+    if (name.includes('bedroom')){
+      this.setState({
+        filterBedChecked: true, 
+        currentBedroomFilter: id
+      }, () => { 
+        this.toggleCheckedBedFilter(id, checked)
+      })
+    } else if (name.includes('footage')){
+      this.setState({
+        filterFootageChecked: true, 
+        smallFootageFilter: id
+      }, () => {
+        this.toggleCheckedFootageSmall(id, checked)
+      })
+    }
+  }  
+  
+
+  // STEP 2A
+  toggleCheckedBedFilter(id, checked) {
+    if (checked) {
       // Show sx bedroom suites if checked
       let results = []
-      results = this.state.suites.filter(suite => suite.fields.rooms === e.target.id)
+      results = this.state.suites.filter(suite => suite.fields.rooms === id)
       console.log( 'Showing filtered suites with X bedrooms:', results)
       this.setState({
-        filterBedChecked: true,
-        filteredBedResults: results,
-        currentBedroomFilter: e.target.id
+        filteredBedResults: results
+      }, () => {
+        this.finalFilter()
       })
     } else {
       // Show all suites if unchecked
@@ -74,155 +101,158 @@ class App extends Component {
         filterBedChecked: false,
         filteredBedResults: this.state.suites,
         currentBedroomFilter: null
+      }, () => {
+        this.finalFilter()
       })
     }
   }
-  
 
-  
-  
-  toggleCheckedFootageSmall(e) {
-      console.log(e.target)
-      if (e.target.checked) {
-        let id = parseInt(e.target.id, 10)
-        // preparing data for footage filter: 
-        let squareSizes = [];
-        this.state.suites.map((record) => {
-          squareSizes.push(record.fields.size) 
-        })
+  // STEP 2B
+  toggleCheckedFootageSmall(id, checked) {
+      if (checked) {
+        let idInt = parseInt(id, 10)
         let results = []
-        results = this.state.suites.filter(suite => suite.fields.size >= id && suite.fields.size <= 800)
+        results = this.state.suites.filter(suite => suite.fields.size >= idInt && suite.fields.size <= 800)
         console.log('Showing only results for Small footage:', results)
         this.setState({
-          filterFootageChecked: true, 
-          filteredFootageSmallResults: results, 
-          currentFootageFilter: e.target.id
+          filteredFootageSmallResults: results
+        }, () => {
+          this.finalFilter()
         })
       } else {
       // Show all suites if unchecked
       console.log('need to come up with elseif statement to display only beds if there is any filter')
+      this.setState({
+        filterFootageChecked: false, 
+        filteredFootageSmallResults: this.state.suites, 
+        smallFootageFilter: null
+      })
       }
+      this.finalFilter()
   }
     
-    toggleCheckedFootageMedium(e) {
-      console.log(e.target)
-      if (e.target.checked) {
-        let id = parseInt(e.target.id, 10)
-        // preparing data for footage filter: 
-        let squareSizes = [];
-        this.state.suites.map((record) => {
-          squareSizes.push(record.fields.size) 
-        })
-        let results = []
-        results = this.state.suites.filter(suite => suite.fields.size >= id && suite.fields.size <= 1000)
-        console.log('Showing only results for Medium footage:', results)
-        this.setState({
-          filterFootageChecked: true, 
-          filteredFootageMediumResults: results, 
-          currentFootageFilter: e.target.id
-        })
-      } else {
-      // Show all suites if unchecked
-      console.log('need to come up with elseif statement to display only beds if there is any filter')
-      }
-    }
- 
-    toggleCheckedFootageBig(e) {
-      console.log(e.target)
-      if (e.target.checked) {
-        let id = parseInt(e.target.id, 10)
-        // preparing data for footage filter: 
-        let squareSizes = [];
-        this.state.suites.map((record) => {
-          squareSizes.push(record.fields.size) 
-        })
-        let results = []
-        results = this.state.suites.filter(suite => suite.fields.size >= id )
-        console.log('Showing only results for Big footage:', results)
-        this.setState({
-          filterFootageChecked: true, 
-          filteredFootageBigResults: results, 
-          currentFootageFilter: e.target.id
-        })
-      } else {
-      // Show all suites if unchecked
-      console.log('need to come up with elseif statement to display only beds if there is any filter')
-      }
-    }
- 
-    // finalFilter() {
-    //   if (this.state.filterBedChecked || this.state.filterFootageChecked) {
-    //   let bedResultsFilter = new Array(this.state.filteredBedResults)
-    //   let smallFootage = new Array(this.state.filteredFootageSmallResults)
-    //   let mediumFootage = new Array(this.state.filteredFootageMediumResults)
-    //   let bigFootage = new Array(this.state.filteredFootageBigResults)
-      
-
-    //   bedResultsFilter.map
-
-    //   let finalResults = []
-
-    // } else {
-    //   console.log("no filter selected")
+    // toggleCheckedFootageMedium(e) {
+    //   if (e.target.checked) {
+    //     let id = parseInt(e.target.id, 10)
+    //     let results = []
+    //     results = this.state.suites.filter(suite => suite.fields.size >= id && suite.fields.size <= 1000)
+    //     console.log('Showing only results for Medium footage:', results)
+    //     this.setState({
+    //       filterFootageChecked: true, 
+    //       filteredFootageMediumResults: results, 
+    //       currentFootageFilter: e.target.id
+    //     })
+    //   } else {
+    //   // Show all suites if unchecked
+    //   console.log('need to come up with elseif statement to display only beds if there is any filter')
+    //   }
     // }
-    // }    
+ 
+    // toggleCheckedFootageBig(e) {
+    //   if (e.target.checked) {
+    //     let id = parseInt(e.target.id, 10)
+    //     let results = []
+    //     results = this.state.suites.filter(suite => suite.fields.size >= id )
+    //     console.log('Showing only results for Big footage:', results)
+    //     this.setState({
+    //       filterFootageChecked: true, 
+    //       filteredFootageBigResults: results, 
+    //       currentFootageFilter: e.target.id
+    //     })
+    //   } else {
+    //   // Show all suites if unchecked
+    //   console.log('need to come up with elseif statement to display only beds if there is any filter')
+    //   }
+    // }
+
+
     
+    finalFilter() {
+      let finalResults = [];
+      let bedResults = [];
+      let smallFootageResults = [];
+
+
+      // If BOTH bed and footage filters are applied
+      if (this.state.filterBedChecked && this.state.filterFootageChecked) {
+        this.state.filteredBedResults.map((result) => bedResults.push(result))
+        this.state.filteredFootageSmallResults != null ? this.state.filteredFootageSmallResults.map(result => smallFootageResults.push(result)) : console.log("none of the small one was selected");
+        finalResults = [...bedResults, ...smallFootageResults]
+        this.filterUnique(finalResults)
+      }
+      // If ONLY bed filter type is applied
+      else if (this.state.filterBedChecked) {
+        this.state.filteredBedResults.map((result) =>           
+        this.setState (previousState => ({
+          filteredResults: [...previousState.filteredBedResults, result ]
+        }))
+        )
+      }
+      // If ONLY footage filter type is applied
+      else if (this.state.filterFootageChecked) {
+        this.state.filteredFootageSmallResults != null ? this.state.filteredFootageSmallResults.map(result => smallFootageResults.push(result)) : console.log("none of the small one was selected");
+        this.setState ({
+          filteredResults: smallFootageResults
+        })
+      }
+      // If NEITHER filter type is applied
+      else {
+        console.log ("none of the filters is applied for beds, coming from finalfilter")
+        return this.state.suites
+      }
+    }
+
+    // if BOTH filters are applied, select only unique values corresponding to the square footage size
+    filterUnique(finalResults){
+      let uniqueResults = finalResults.filter(result => result.fields.size >= 600 && result.fields.size <= 800)
+      this.setState ({
+        filteredResults: uniqueResults
+      })
+    }
+
+
     
     render(){
-
-      // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
-      const { suites, filterChecked } = this.state;
-      
-      //this is the way how to do it with hooks
-      // const [state, setState] = useState()
-      
-      // this.finalFilter() 
-      
+    // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
+    const { suites, filterChecked } = this.state
+    //this is the way how to do it with hooks
+    // const [state, setState] = useState()
+    console.log(this.state.filteredResults)
+    console.log(this.state.filteredBedResults)
 
     return (
-      <Router>
-        <React.Fragment>
-          <nav className="navbar">
-          
-            <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
-          </nav>
-          <div>
-            {!suites && 'loading...'}
-            {suites && (
-              <FilterBar 
-                suites={suites}
-                toggleCheckedBedFilter={this.toggleCheckedBedFilter}
-                currentBedroomFilter={this.state.currentBedroomFilter}
-                toggleCheckedFootageSmall={this.toggleCheckedFootageSmall}
-                toggleCheckedFootageMedium = {this.toggleCheckedFootageMedium}
-                toggleCheckedFootageBig = {this.toggleCheckedFootageBig}
-                currentFootageFilter={this.currentFootageFilter}
-             />
-            )}
-          </div>
-          <div className="container-fluid padding-main-container">
-            <div className="row">
-                  {!suites && 'loading...'}
+      <React.Fragment>
+        <nav className="navbar">
+        
+          <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
+        </nav>
+        <div>
+          {!suites && 'loading...'}
+          {suites && (
+            <FilterBar 
+              suites={suites}
+              toggleCheckedBedFilter={this.toggleCheckedBedFilter}
+              currentBedroomFilter={this.state.currentBedroomFilter}
+              toggleCheckedFootageSmall={this.toggleCheckedFootageSmall}
+              smallFootageFilter={this.state.smallFootageFilter}
+              handleToggle = {this.handleToggle}
+              finalFilter = {this.finalFilter}
+              // toggleCheckedFootageMedium = {this.toggleCheckedFootageMedium} 
+              // toggleCheckedFootageBig = {this.toggleCheckedFootageBig}
+            />
+          )}
+        </div>
+        <div className="container-fluid padding-main-container">
+          <div className="row">
+                {!suites && 'loading...'}
 
-                  {suites && this.state.filteredResults.map(suite => 
-                    
-                    <SuitesCard  {...suite.fields} key={suite.fields.id} /> )}
-            </div>
-              <ul>
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
-                <li>
-                  <Link to="/about">About</Link>
-                </li>
-                <li>
-                  <Link to="/topics">Topics</Link>
-                </li>
-              </ul>
-            </div>
-          </React.Fragment>
-          </Router>
-      );
+                {suites && this.state.filteredResults.map(suite => 
+                  
+                  <SuitesCard  {...suite.fields} key={suite.fields.id} /> )}
+          </div>
+        </div>
+      </React.Fragment>
+    );
   }
 }
 
