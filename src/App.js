@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 
-
 //import imagery
 import Logo from "./images/Logo_Bronte_Village.png";
 
 //import components
 import FilterBar from "./components/filterbar";
-
 import SuitesCard from './components/cards';
-
-
 
 class App extends Component {
   constructor (props) {
@@ -18,8 +14,7 @@ class App extends Component {
       suites: null,
       filteredResults: null, 
       filteredBedResults: null, 
-      filterBedChecked: false, 
-      currentBedroomFilter: null, 
+      currentBedroomFilters: [], 
       filterFootageChecked: false, 
       filteredFootageSmallResults: null, 
       smallFootageFilter: null
@@ -49,45 +44,44 @@ class App extends Component {
     });
   }
 
-  /* STEP 1
-    Hanlder function that:
-      - Gets triggered when any checkbox is toggled
-      - Detects which filter type the event came from (using e.target.name)
-      - From the filter type, which filter was triggered
-      - Was the filter checked?
-      - Are both, or only one filer, or neither filter types applied?
-      - Using the above conditions trigger either 2A or 2B
-
-  */
-
-  
+  //STEP I  
   handleToggle(e) {
     const { id, name, checked } = e.target
-    console.log(e.target.checked)
-    if (name.includes('bedroom')){
+    if (name.includes('bedroom')) {
+      if (this.state.currentBedroomFilters.includes(id) && !checked) {
+        const bedroomFilterIds = this.state.currentBedroomFilters.filter(filters => filters !== id)
+        this.setState({
+          currentBedroomFilters: bedroomFilterIds
+        }, () => { 
+          this.toggleCheckedBedFilter()
+          }
+        )
+      } else {
+      const bedroomFilterIds = this.state.currentBedroomFilters.concat(id)
       this.setState({
-        filterBedChecked: true, 
-        currentBedroomFilter: id
+        currentBedroomFilters: bedroomFilterIds
       }, () => { 
         this.toggleCheckedBedFilter(id, checked)
-      })
-    } else if (name.includes('footage')){
+        }
+      )}; 
+    } else if (name.includes('footage')) {
       this.setState({
         filterFootageChecked: true, 
         smallFootageFilter: id
       }, () => {
         this.toggleCheckedFootageSmall(id, checked)
-      })
+      });
     }
   }  
   
 
   // STEP 2A
-  toggleCheckedBedFilter(id, checked) {
-    if (checked) {
-      // Show sx bedroom suites if checked
+  toggleCheckedBedFilter() {
+    //if there is any BEDROOM FILTER, match with IDs and push to final results
+    if (this.state.currentBedroomFilters.length > 0) {
       let results = []
-      results = this.state.suites.filter(suite => suite.fields.rooms === id)
+      results = this.state.currentBedroomFilters.flatMap(id => 
+       this.state.suites.filter(suite => suite.fields.rooms === id))
       console.log( 'Showing filtered suites with X bedrooms:', results)
       this.setState({
         filteredBedResults: results
@@ -98,7 +92,6 @@ class App extends Component {
       // Show all suites if unchecked
       console.log('Showing all suites - no filter:', this.state.suites)
       this.setState({
-        filterBedChecked: false,
         filteredBedResults: this.state.suites,
         currentBedroomFilter: null
       }, () => {
@@ -172,21 +165,18 @@ class App extends Component {
       let bedResults = [];
       let smallFootageResults = [];
 
-
       // If BOTH bed and footage filters are applied
-      if (this.state.filterBedChecked && this.state.filterFootageChecked) {
+      if (this.state.filteredBedResults.length > 0 && this.state.filterFootageChecked) {
         this.state.filteredBedResults.map((result) => bedResults.push(result))
         this.state.filteredFootageSmallResults != null ? this.state.filteredFootageSmallResults.map(result => smallFootageResults.push(result)) : console.log("none of the small one was selected");
         finalResults = [...bedResults, ...smallFootageResults]
         this.filterUnique(finalResults)
       }
       // If ONLY bed filter type is applied
-      else if (this.state.filterBedChecked) {
-        this.state.filteredBedResults.map((result) =>           
-        this.setState (previousState => ({
-          filteredResults: [...previousState.filteredBedResults, result ]
-        }))
-        )
+      else if (this.state.filteredBedResults.length > 0) {
+        this.setState ({
+          filteredResults: this.state.filteredBedResults
+        })
       }
       // If ONLY footage filter type is applied
       else if (this.state.filterFootageChecked) {
@@ -214,11 +204,9 @@ class App extends Component {
     
     render(){
     // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
-    const { suites, filterChecked } = this.state
+    const { suites } = this.state
     //this is the way how to do it with hooks
     // const [state, setState] = useState()
-    console.log(this.state.filteredResults)
-    console.log(this.state.filteredBedResults)
 
     return (
       <React.Fragment>
@@ -232,7 +220,7 @@ class App extends Component {
             <FilterBar 
               suites={suites}
               toggleCheckedBedFilter={this.toggleCheckedBedFilter}
-              currentBedroomFilter={this.state.currentBedroomFilter}
+              currentBedroomFilters={this.state.currentBedroomFilters}
               toggleCheckedFootageSmall={this.toggleCheckedFootageSmall}
               smallFootageFilter={this.state.smallFootageFilter}
               handleToggle = {this.handleToggle}

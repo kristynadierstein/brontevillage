@@ -1,10 +1,6 @@
 //import libraries
 import React from "react";
 
-//import components
-import Filter from "../components/filter.js"
-
-
 class FilterBar extends React.Component {
   constructor(props){
     super(props)
@@ -14,19 +10,15 @@ class FilterBar extends React.Component {
     }    
   }
 
-
   render(){
     let rooms = [];
 
-    const { suites } = this.props;
-    const { } = this.state;
-
     this.props.suites.map((record) => {
       rooms.push(record.fields.rooms)
+      return rooms
     })
 
     const distinctBedrooms = [...new Set(rooms)];
- 
  
     return(
       <React.Fragment>
@@ -42,12 +34,12 @@ class FilterBar extends React.Component {
                 <div className="flex-column">
                   <ul>
                     {distinctBedrooms.map(distinctBedroom => 
-                      <li className="checkbox-list">
+                      <li className="checkbox-list" key={distinctBedroom}>
                         <input
                           type="checkbox"
                           name={`bedroom-${distinctBedroom}`}
                           id={distinctBedroom}
-                          checked={this.props.filterBedChecked} 
+                          checked={this.props.currentBedroomFilters.includes(distinctBedroom)} 
                           onChange={e => this.props.handleToggle(e)}
                           className="checkboxes-filters"
                         />
