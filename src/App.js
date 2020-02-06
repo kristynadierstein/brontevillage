@@ -15,7 +15,7 @@ class App extends Component {
       filteredResults: null, 
       filteredBedResults: null, 
       currentBedroomFilters: [], 
-      filterFootageChecked: false, 
+      currentFootageFilters: [],
       filteredFootageSmallResults: null, 
       smallFootageFilter: null
       // filteredFootageMediumResults: null, 
@@ -24,8 +24,8 @@ class App extends Component {
 
     this.handleToggle = this.handleToggle.bind(this)
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
-    this.toggleCheckedFootageSmall = this.toggleCheckedFootageSmall.bind(this)
     this.finalFilter = this.finalFilter.bind(this)
+    // this.toggleCheckedFootageSmall = this.toggleCheckedFootageSmall.bind(this)
     // this.toggleCheckedFootageMedium = this.toggleCheckedFootageMedium.bind(this)
     // this.toggleCheckedFootageBig = this.toggleCheckedFootageBig.bind(this)
   }
@@ -61,16 +61,28 @@ class App extends Component {
       this.setState({
         currentBedroomFilters: bedroomFilterIds
       }, () => { 
-        this.toggleCheckedBedFilter(id, checked)
+        this.toggleCheckedBedFilter()
         }
       )}; 
     } else if (name.includes('footage')) {
+      let idInt = parseInt(id, 10)
+      if (this.state.currentFootageFilters.includes(idInt) && !checked) {
+        const footageFilterIds = this.state.currentFootageFilters.filter(filters => filters !== idInt)
+        this.setState({
+          currentFootageFilters: footageFilterIds
+        }, () => {
+          this.toggleCheckedFootage(id, checked)
+        }
+      )
+      } else {
+      const footageFilterIds = this.state.currentFootageFilters.concat(idInt)
+      console.log(footageFilterIds)
       this.setState({
-        filterFootageChecked: true, 
-        smallFootageFilter: id
+        currentFootageFilters: footageFilterIds
       }, () => {
-        this.toggleCheckedFootageSmall(id, checked)
-      });
+        this.toggleCheckedFootage(id, checked)
+       }
+      )};
     }
   }  
   
@@ -100,29 +112,59 @@ class App extends Component {
     }
   }
 
-  // STEP 2B
-  toggleCheckedFootageSmall(id, checked) {
-      if (checked) {
-        let idInt = parseInt(id, 10)
-        let results = []
-        results = this.state.suites.filter(suite => suite.fields.size >= idInt && suite.fields.size <= 800)
-        console.log('Showing only results for Small footage:', results)
-        this.setState({
-          filteredFootageSmallResults: results
-        }, () => {
-          this.finalFilter()
-        })
+  toggleCheckedFootage(id, checked) {
+    console.log(this.state.currentFootageFilters)
+    console.log(checked)
+    console.log(id)
+    const smallSuites = this.state.suites.filter(suite => suite.fields.size >= 600 && suite.fields.size <= 800)
+    console.log(smallSuites)
+    const mediumSuites = this.state.suites.filter(suite => suite.fields.size >= 800 && suite.fields.size <= 1000)
+    console.log(mediumSuites)
+    const bigSuites = this.state.suites.filter(suite => suite.fields.size >= 1000)
+    console.log(bigSuites)
+
+    let finalFootage = []
+
+    if (this.state.currentFootageFilters > 0) {      
+        if (this.state.currentFootageFilters.includes(600) && checked) {
+          finalFootage.concat(smallSuites)
+        }
+        else if (this.state.currentFootageFilters.includes(800) && checked) {
+          finalFootage.concat(mediumSuites)
+        }
+        else if (this.state.currentFootageFilters.includes(1000) && checked) {
+          finalFootage.concat(bigSuites)
+        }
+        console.log(finalFootage)
       } else {
       // Show all suites if unchecked
-      console.log('need to come up with elseif statement to display only beds if there is any filter')
-      this.setState({
-        filterFootageChecked: false, 
-        filteredFootageSmallResults: this.state.suites, 
-        smallFootageFilter: null
-      })
+      console.log('Showing all suites - no filter:', this.state.suites)
       }
-      this.finalFilter()
   }
+
+  // STEP 2B
+  // toggleCheckedFootageSmall(id, checked) {
+  //     if (checked) {
+  //       let idInt = parseInt(id, 10)
+  //       let results = []
+  //       results = this.state.suites.filter(suite => suite.fields.size >= idInt && suite.fields.size <= 800)
+  //       console.log('Showing only results for Small footage:', results)
+  //       this.setState({
+  //         filteredFootageSmallResults: results
+  //       }, () => {
+  //         this.finalFilter()
+  //       })
+  //     } else {
+  //     // Show all suites if unchecked
+  //     console.log('need to come up with elseif statement to display only beds if there is any filter')
+  //     this.setState({
+  //       filterFootageChecked: false, 
+  //       filteredFootageSmallResults: this.state.suites, 
+  //       smallFootageFilter: null
+  //     })
+  //     }
+  //     this.finalFilter()
+  // }
     
     // toggleCheckedFootageMedium(e) {
     //   if (e.target.checked) {
@@ -225,6 +267,8 @@ class App extends Component {
               smallFootageFilter={this.state.smallFootageFilter}
               handleToggle = {this.handleToggle}
               finalFilter = {this.finalFilter}
+              currentFootageFilters = {this.state.currentFootageFilters}
+              // toggleCheckedFootage = {this.toggleCheckedFootage}
               // toggleCheckedFootageMedium = {this.toggleCheckedFootageMedium} 
               // toggleCheckedFootageBig = {this.toggleCheckedFootageBig}
             />
