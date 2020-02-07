@@ -12,20 +12,20 @@ class App extends Component {
     super(props);
     this.state = {
       suites: null,
-      filteredResults: null, 
-      filteredBedResults: null, 
       currentBedroomFilters: [], 
+      filteredBedResults: null, 
       currentFootageFilters: [],
       filteredFootageSmallResults: null, 
       filteredFootageMediumResults: null,
       filteredFootageBigResults:  null, 
-      filteredFootageResults: null
+      filteredFootageResults: null,
+      filteredResults: null 
     };
 
     this.handleToggle = this.handleToggle.bind(this)
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
-    this.finalFilter = this.finalFilter.bind(this)
     this.handleFootageResults = this.handleFootageResults.bind(this)
+    this.finalFilter = this.finalFilter.bind(this)
   }
 
   componentDidMount (){
@@ -70,8 +70,8 @@ class App extends Component {
           currentFootageFilters: footageFilterIds
         }, () => {
           this.toggleCheckedFootage(id, checked)
-        }
-      )
+          }
+        )
       } else {
       const footageFilterIds = this.state.currentFootageFilters.concat(idInt)
       this.setState({
@@ -180,87 +180,76 @@ class App extends Component {
       this.finalFilter()
     })
   }
+   
+  finalFilter() {
+    console.log(this.state.currentFootageFilters)
+    console.log(this.state.filteredBedResults)
+    console.log(this.state.filteredFootageResults)
+    console.log(this.state.currentBedroomFilters)
 
-
-    
-    finalFilter() {
-      let finalResults = [];
-      let bedResults = [];
-      let smallFootageResults = [];
-
-      if (this.state.currentFootageFilters.length > 0) {
-        this.setState ({
-          filteredResults: this.state.filteredFootageResults
-        })
-      } 
-      
-      else if (this.state.filteredBedResults.length > 0) {
-        this.setState({
-          filteredResults: this.state.filteredBedResults
-        })
-      } else {
-        this.setState({
-          filteredResults: this.state.suites
-        })
-      }
-      // // If BOTH bed and footage filters are applied
-      // if (this.state.filteredBedResults.length > 0 && this.state.currentFootageFilters.length > 0) {
-      //   console.log("both filters are checked")
-      // }
-    }
-
-    // if BOTH filters are applied, select only unique values corresponding to the square footage size
-    filterUnique(finalResults){
-      let uniqueResults = finalResults.filter(result => result.fields.size >= 600 && result.fields.size <= 800)
+    if (this.state.currentFootageFilters > 0 && this.state.filteredBedResults != null) {
+      let finalResultsCombined = []
+      finalResultsCombined = this.state.currentBedroomFilters.flatMap(id => this.state.filteredFootageResults.filter(result => result.fields.rooms === id))
+      this.setState({
+        filteredResults: finalResultsCombined
+      })
+    } else if (this.state.currentFootageFilters > 0) {
       this.setState ({
-        filteredResults: uniqueResults
+        filteredResults: this.state.filteredFootageResults
+      })
+    } else if (this.state.filteredBedResults != null) {
+      this.setState({
+        filteredResults: this.state.filteredBedResults
+      })
+    } else {
+      this.setState({
+        filteredResults: this.state.suites
       })
     }
-
+  }
 
     
-    render(){
-    // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
-    const { suites } = this.state
-    //this is the way how to do it with hooks
-    // const [state, setState] = useState()
+  render(){
+  // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
+  const { suites } = this.state
+  //this is the way how to do it with hooks
+  // const [state, setState] = useState()
 
-    return (
-      <React.Fragment>
-        <nav className="navbar">
-        
-          <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
-        </nav>
-        <div>
-          {!suites && 'loading...'}
-          {suites && (
-            <FilterBar 
-              suites={suites}
-              toggleCheckedBedFilter={this.toggleCheckedBedFilter}
-              currentBedroomFilters={this.state.currentBedroomFilters}
-              toggleCheckedFootageSmall={this.toggleCheckedFootageSmall}
-              smallFootageFilter={this.state.smallFootageFilter}
-              handleToggle = {this.handleToggle}
-              finalFilter = {this.finalFilter}
-              currentFootageFilters = {this.state.currentFootageFilters}
-              // toggleCheckedFootage = {this.toggleCheckedFootage}
-              // toggleCheckedFootageMedium = {this.toggleCheckedFootageMedium} 
-              // toggleCheckedFootageBig = {this.toggleCheckedFootageBig}
-            />
-          )}
-        </div>
-        <div className="container-fluid padding-main-container">
-          <div className="row">
-                {!suites && 'loading...'}
+  console.log(this.state.filteredResults)
+    
+  return (
+    <React.Fragment>
+      <nav className="navbar">
+      
+        <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
+      </nav>
+      <div>
+        {!suites && 'loading...'}
+        {suites && (
+          <FilterBar 
+            suites={suites}
+            toggleCheckedBedFilter={this.toggleCheckedBedFilter}
+            currentBedroomFilters={this.state.currentBedroomFilters}
+            toggleCheckedFootageSmall={this.toggleCheckedFootageSmall}
+            smallFootageFilter={this.state.smallFootageFilter}
+            handleToggle = {this.handleToggle}
+            finalFilter = {this.finalFilter}
+            currentFootageFilters = {this.state.currentFootageFilters}
+          />
+        )}
+      </div>
+      <div className="container-fluid padding-main-container">
+        <div className="row">
+              {!suites && 'loading...'}
 
-                {suites && this.state.filteredResults.map(suite => 
-                  
-                  <SuitesCard  {...suite.fields} key={suite.fields.id} /> )}
-          </div>
+              {suites && this.state.filteredResults.map(suite => 
+                
+              <SuitesCard  {...suite.fields} key={suite.fields.id} /> )}
         </div>
-      </React.Fragment>
-    );
-  }
+      </div>
+    </React.Fragment>
+  );
+}
 }
 
 export default App
