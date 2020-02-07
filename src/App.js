@@ -26,9 +26,6 @@ class App extends Component {
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
     this.finalFilter = this.finalFilter.bind(this)
     this.handleFootageResults = this.handleFootageResults.bind(this)
-    // this.toggleCheckedFootageSmall = this.toggleCheckedFootageSmall.bind(this)
-    // this.toggleCheckedFootageMedium = this.toggleCheckedFootageMedium.bind(this)
-    // this.toggleCheckedFootageBig = this.toggleCheckedFootageBig.bind(this)
   }
 
   componentDidMount (){
@@ -113,8 +110,6 @@ class App extends Component {
   }
 
   toggleCheckedFootage(id, checked) {
-    
-
     if (this.state.currentFootageFilters.length > 0) {      
       let resultsSmall = []
       let resultsMedium = []
@@ -165,12 +160,15 @@ class App extends Component {
         }
       } else {
         // Show all suites if unchecked
-        console.log('Showing all suites - no filter:', this.state.suites)
+        this.setState({
+          filteredFootageResults: this.state.suites,
+        }, () => {
+          this.finalFilter()
+        })
       }
   }
 
   handleFootageResults() {
-
     let smallSuites = this.state.filteredFootageSmallResults
     let mediumSuites = this.state.filteredFootageMediumResults
     let bigSuites = this.state.filteredFootageBigResults
@@ -179,66 +177,9 @@ class App extends Component {
     this.setState ({
       filteredFootageResults: finalFootageSuites
     }, () => {
-      console.log(this.state.filteredFootageResults)
+      this.finalFilter()
     })
   }
-  // STEP 2B
-  // toggleCheckedFootageSmall(id, checked) {
-  //     if (checked) {
-  //       let idInt = parseInt(id, 10)
-  //       let results = []
-  //       results = this.state.suites.filter(suite => suite.fields.size >= idInt && suite.fields.size <= 800)
-  //       console.log('Showing only results for Small footage:', results)
-  //       this.setState({
-  //         filteredFootageSmallResults: results
-  //       }, () => {
-  //         this.finalFilter()
-  //       })
-  //     } else {
-  //     // Show all suites if unchecked
-  //     console.log('need to come up with elseif statement to display only beds if there is any filter')
-  //     this.setState({
-  //       filterFootageChecked: false, 
-  //       filteredFootageSmallResults: this.state.suites, 
-  //       smallFootageFilter: null
-  //     })
-  //     }
-  //     this.finalFilter()
-  // }
-    
-    // toggleCheckedFootageMedium(e) {
-    //   if (e.target.checked) {
-    //     let id = parseInt(e.target.id, 10)
-    //     let results = []
-    //     results = this.state.suites.filter(suite => suite.fields.size >= id && suite.fields.size <= 1000)
-    //     console.log('Showing only results for Medium footage:', results)
-    //     this.setState({
-    //       filterFootageChecked: true, 
-    //       filteredFootageMediumResults: results, 
-    //       currentFootageFilter: e.target.id
-    //     })
-    //   } else {
-    //   // Show all suites if unchecked
-    //   console.log('need to come up with elseif statement to display only beds if there is any filter')
-    //   }
-    // }
- 
-    // toggleCheckedFootageBig(e) {
-    //   if (e.target.checked) {
-    //     let id = parseInt(e.target.id, 10)
-    //     let results = []
-    //     results = this.state.suites.filter(suite => suite.fields.size >= id )
-    //     console.log('Showing only results for Big footage:', results)
-    //     this.setState({
-    //       filterFootageChecked: true, 
-    //       filteredFootageBigResults: results, 
-    //       currentFootageFilter: e.target.id
-    //     })
-    //   } else {
-    //   // Show all suites if unchecked
-    //   console.log('need to come up with elseif statement to display only beds if there is any filter')
-    //   }
-    // }
 
 
     
@@ -247,31 +188,25 @@ class App extends Component {
       let bedResults = [];
       let smallFootageResults = [];
 
-      // If BOTH bed and footage filters are applied
-      if (this.state.filteredBedResults.length > 0 && this.state.filterFootageChecked) {
-        this.state.filteredBedResults.map((result) => bedResults.push(result))
-        this.state.filteredFootageSmallResults != null ? this.state.filteredFootageSmallResults.map(result => smallFootageResults.push(result)) : console.log("none of the small one was selected");
-        finalResults = [...bedResults, ...smallFootageResults]
-        this.filterUnique(finalResults)
-      }
-      // If ONLY bed filter type is applied
-      else if (this.state.filteredBedResults.length > 0) {
+      if (this.state.currentFootageFilters.length > 0) {
         this.setState ({
+          filteredResults: this.state.filteredFootageResults
+        })
+      } 
+      
+      else if (this.state.filteredBedResults.length > 0) {
+        this.setState({
           filteredResults: this.state.filteredBedResults
         })
-      }
-      // If ONLY footage filter type is applied
-      else if (this.state.filterFootageChecked) {
-        this.state.filteredFootageSmallResults != null ? this.state.filteredFootageSmallResults.map(result => smallFootageResults.push(result)) : console.log("none of the small one was selected");
-        this.setState ({
-          filteredResults: smallFootageResults
+      } else {
+        this.setState({
+          filteredResults: this.state.suites
         })
       }
-      // If NEITHER filter type is applied
-      else {
-        console.log ("none of the filters is applied for beds, coming from finalfilter")
-        return this.state.suites
-      }
+      // // If BOTH bed and footage filters are applied
+      // if (this.state.filteredBedResults.length > 0 && this.state.currentFootageFilters.length > 0) {
+      //   console.log("both filters are checked")
+      // }
     }
 
     // if BOTH filters are applied, select only unique values corresponding to the square footage size
