@@ -23,6 +23,8 @@ class App extends Component {
     };
 
     this.handleToggle = this.handleToggle.bind(this)
+    this.handleToggleBedrooms = this.handleToggleBedrooms.bind(this)
+    this.handleToggleFootage = this.handleToggleFootage.bind(this)
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
     this.handleFootageResults = this.handleFootageResults.bind(this)
     this.finalFilter = this.finalFilter.bind(this)
@@ -47,57 +49,56 @@ class App extends Component {
 
   //STEP I  
   handleToggle(e) {
-    const { id, name, checked } = e.target
-    console.log(e.target.id)
-    console.log(e.target.checked)
-    console.log(e.target.name.includes("footage"))
-    if (name.includes('bedroom')) {
-      if (this.state.currentBedroomFilters.includes(id) && !checked) {
-        const bedroomFilterIds = this.state.currentBedroomFilters.filter(filters => filters !== id)
-        this.setState({
-          currentBedroomFilters: bedroomFilterIds
-        }, () => { 
-          this.toggleCheckedBedFilter()
-          }
-        )
-      } else {
-      const bedroomFilterIds = this.state.currentBedroomFilters.concat(id)
+    const { name } = e.target
+    if (name.includes('bedroom')) {  
+      this.handleToggleBedrooms(e) 
+    } else if (name.includes('footage')) {
+      this.handleToggleFootage(e)
+    }
+  }  
+  
+  handleToggleBedrooms(e) {
+    const { id, checked } = e.target
+    if (this.state.currentBedroomFilters.includes(id) && !checked) {
+      const bedroomFilterIds = this.state.currentBedroomFilters.filter(filters => filters !== id)
       this.setState({
         currentBedroomFilters: bedroomFilterIds
       }, () => { 
         this.toggleCheckedBedFilter()
         }
-      )}; 
-    } else if (name.includes('footage')) {
-      let idInt = parseInt(id, 10)
-      console.log(idInt)
-      console.log(this.state.currentFootageFilters)
-      if (this.state.currentFootageFilters.includes(idInt) && !checked) {
-        console.log("this id was removed from filters", idInt)
-        const footageFilterIds = this.state.currentFootageFilters.filter(filters => filters !== idInt)
-        console.log(footageFilterIds)
-        this.setState({
-          currentFootageFilters: footageFilterIds
-        }, () => {
-          this.toggleCheckedFootage(id, checked)
-          }
-        )
-      } else {
-      const footageFilterIds = this.state.currentFootageFilters.concat(idInt)
-      console.log(footageFilterIds)
+      )
+    } else {
+    const bedroomFilterIds = this.state.currentBedroomFilters.concat(id)
+    this.setState({
+      currentBedroomFilters: bedroomFilterIds
+    }, () => { 
+      this.toggleCheckedBedFilter()
+      }
+    )};
+  }
+
+  handleToggleFootage(e) {
+    const { id, checked } = e.target
+    let idInt = parseInt(id, 10)
+    if (this.state.currentFootageFilters.includes(idInt) && !checked) {
+      const footageFilterIds = this.state.currentFootageFilters.filter(filters => filters !== idInt)
       this.setState({
         currentFootageFilters: footageFilterIds
       }, () => {
         this.toggleCheckedFootage(id, checked)
-       }
-      )};
+        }
+      )
+    } else {
+    const footageFilterIds = this.state.currentFootageFilters.concat(idInt)
+    this.setState({
+      currentFootageFilters: footageFilterIds
+    }, () => {
+      this.toggleCheckedFootage(id, checked)
     }
-  }  
-  
+    )};
+  }
 
-  // STEP 2A
   toggleCheckedBedFilter() {
-    //if there is any BEDROOM FILTER, match with IDs and push to final results
     if (this.state.currentBedroomFilters.length > 0) {
       let results = []
       results = this.state.currentBedroomFilters.flatMap(id => 
@@ -125,7 +126,6 @@ class App extends Component {
         if (id === "800" ) {
           this.handleMediumFootage(checked)
         }
-        
         if (id === "1000") {
           this.handleBigFootage(checked)
         }
@@ -148,7 +148,7 @@ class App extends Component {
       }, () => {
         this.handleFootageResults()
       })
-    }  else  {
+    } else {
       this.setState({
         filteredFootageSmallResults: []
       }, () => {
@@ -166,7 +166,7 @@ class App extends Component {
       }, () => {
         this.handleFootageResults()
       })
-    } else if (!checked) {
+    } else {
       this.setState({
         filteredFootageMediumResults: []
       }, () => {
@@ -184,7 +184,7 @@ class App extends Component {
       }, () => {
       this.handleFootageResults()
       })
-    } else if (!checked) {
+    } else {
       this.setState({
         filteredFootageBigResults: []
       }, () => {
@@ -194,16 +194,12 @@ class App extends Component {
 
   }
 
-
   handleFootageResults() {
     let smallSuites = this.state.filteredFootageSmallResults
     let mediumSuites = this.state.filteredFootageMediumResults
     let bigSuites = this.state.filteredFootageBigResults
-    console.log(this.state.filteredFootageSmallResults)
-    console.log(this.state.filteredFootageMediumResults)
-    console.log(this.state.filteredFootageBigResults)
+
     let finalFootageSuites =[...smallSuites||[], ...mediumSuites||[], ...bigSuites||[]]
-    console.log(finalFootageSuites)
 
     this.setState ({
       filteredFootageResults: finalFootageSuites
@@ -244,8 +240,7 @@ class App extends Component {
     
   return (
     <React.Fragment>
-      <nav className="navbar">
-      
+      <nav className="navbar">     
         <a className="navbar-brand" href="#"><img src={Logo} alt="Logo" style={{width:'150px', marginLeft: '15px'}} /></a>
       </nav>
       <div>
@@ -274,7 +269,7 @@ class App extends Component {
       </div>
     </React.Fragment>
   );
-}
+  }
 }
 
 export default App
