@@ -15,9 +15,9 @@ class App extends Component {
       currentBedroomFilters: [], 
       filteredBedResults: null, 
       currentFootageFilters: [],
-      filteredFootageSmallResults: null, 
-      filteredFootageMediumResults: null,
-      filteredFootageBigResults:  null, 
+      filteredFootageSmallResults: [], 
+      filteredFootageMediumResults: [],
+      filteredFootageBigResults:  [], 
       filteredFootageResults: null,
       filteredResults: null 
     };
@@ -26,6 +26,9 @@ class App extends Component {
     this.toggleCheckedBedFilter = this.toggleCheckedBedFilter.bind(this)
     this.handleFootageResults = this.handleFootageResults.bind(this)
     this.finalFilter = this.finalFilter.bind(this)
+    this.handleSmallFootage = this.handleSmallFootage.bind(this)
+    this.handleMediumFootage = this.handleMediumFootage.bind(this)
+    this.handleBigFootage = this.handleBigFootage.bind(this)
   }
 
   componentDidMount (){
@@ -45,6 +48,9 @@ class App extends Component {
   //STEP I  
   handleToggle(e) {
     const { id, name, checked } = e.target
+    console.log(e.target.id)
+    console.log(e.target.checked)
+    console.log(e.target.name.includes("footage"))
     if (name.includes('bedroom')) {
       if (this.state.currentBedroomFilters.includes(id) && !checked) {
         const bedroomFilterIds = this.state.currentBedroomFilters.filter(filters => filters !== id)
@@ -64,8 +70,12 @@ class App extends Component {
       )}; 
     } else if (name.includes('footage')) {
       let idInt = parseInt(id, 10)
+      console.log(idInt)
+      console.log(this.state.currentFootageFilters)
       if (this.state.currentFootageFilters.includes(idInt) && !checked) {
+        console.log("this id was removed from filters", idInt)
         const footageFilterIds = this.state.currentFootageFilters.filter(filters => filters !== idInt)
+        console.log(footageFilterIds)
         this.setState({
           currentFootageFilters: footageFilterIds
         }, () => {
@@ -74,6 +84,7 @@ class App extends Component {
         )
       } else {
       const footageFilterIds = this.state.currentFootageFilters.concat(idInt)
+      console.log(footageFilterIds)
       this.setState({
         currentFootageFilters: footageFilterIds
       }, () => {
@@ -91,15 +102,12 @@ class App extends Component {
       let results = []
       results = this.state.currentBedroomFilters.flatMap(id => 
        this.state.suites.filter(suite => suite.fields.rooms === id))
-      console.log( 'Showing filtered suites with X bedrooms:', results)
-      this.setState({
-        filteredBedResults: results
-      }, () => {
+        this.setState({
+          filteredBedResults: results
+        }, () => {
         this.finalFilter()
-      })
+        })
     } else {
-      // Show all suites if unchecked
-      console.log('Showing all suites - no filter:', this.state.suites)
       this.setState({
         filteredBedResults: this.state.suites,
         currentBedroomFilter: null
@@ -111,52 +119,15 @@ class App extends Component {
 
   toggleCheckedFootage(id, checked) {
     if (this.state.currentFootageFilters.length > 0) {      
-      let resultsSmall = []
-      let resultsMedium = []
-      let resultsBig =[]
-        if (id === "600" && checked) {
-          resultsSmall = this.state.suites.filter(suite => suite.fields.size >= 600 && suite.fields.size <= 800)
-          console.log("Showing filtered small footage:", resultsSmall)
-          this.setState({
-            filteredFootageSmallResults: resultsSmall,
-          }, () => {
-            this.handleFootageResults()
-          })
-        }  else if (id === "600" && !checked) {
-          this.setState({
-            filteredFootageSmallResults: []
-          }, () => {
-            this.handleFootageResults()
-          })
-        } else if (id === "800" && checked) {
-          resultsMedium = this.state.suites.filter(suite => suite.fields.size >= 800 && suite.fields.size <= 1000)
-          console.log("Showing filtered medium footage:", resultsMedium)
-          this.setState({
-            filteredFootageMediumResults: resultsMedium,
-          }, () => {
-            this.handleFootageResults()
-          })
-        } else if (id === "800" && !checked) {
-          this.setState({
-            filteredFootageMediumResults: []
-          }, () => {
-            this.handleFootageResults()
-          })
-        } else if (id === "1000" && checked) {
-          resultsBig = this.state.suites.filter(suite => suite.fields.size >= 1000)
-          console.log("Showing filtered big footage:", resultsBig)
-          this.setState({
-            filteredFootageBigResults: resultsBig,
-          }, () => {
-           this.handleFootageResults()
-          })
-
-        } else if (id ==="1000" && !checked) {
-          this.setState({
-            filteredFootageBigResults: []
-          }, () => {
-            this.handleFootageResults()
-          })
+        if (id === "600"){
+          this.handleSmallFootage(checked)
+        }
+        if (id === "800" ) {
+          this.handleMediumFootage(checked)
+        }
+        
+        if (id === "1000") {
+          this.handleBigFootage(checked)
         }
       } else {
         // Show all suites if unchecked
@@ -166,13 +137,73 @@ class App extends Component {
           this.finalFilter()
         })
       }
+    }
+
+  handleSmallFootage(checked) {
+    if (checked) {
+      let resultsSmall = []
+      resultsSmall = this.state.suites.filter(suite => suite.fields.size >= 600 && suite.fields.size <= 800)
+      this.setState({
+        filteredFootageSmallResults: resultsSmall,
+      }, () => {
+        this.handleFootageResults()
+      })
+    }  else  {
+      this.setState({
+        filteredFootageSmallResults: []
+      }, () => {
+        this.handleFootageResults()
+      })
+    } 
   }
+
+  handleMediumFootage(checked) {
+    if (checked) {
+      let resultsMedium = []
+      resultsMedium = this.state.suites.filter(suite => suite.fields.size >= 800 && suite.fields.size <= 1000)
+      this.setState({
+        filteredFootageMediumResults: resultsMedium,
+      }, () => {
+        this.handleFootageResults()
+      })
+    } else if (!checked) {
+      this.setState({
+        filteredFootageMediumResults: []
+      }, () => {
+        this.handleFootageResults()
+      })
+    } 
+  }
+
+  handleBigFootage(checked) {
+    if (checked) {
+      let resultsBig =[]
+      resultsBig = this.state.suites.filter(suite => suite.fields.size >= 1000)
+      this.setState({
+        filteredFootageBigResults: resultsBig,
+      }, () => {
+      this.handleFootageResults()
+      })
+    } else if (!checked) {
+      this.setState({
+        filteredFootageBigResults: []
+      }, () => {
+        this.handleFootageResults()
+      })
+    }
+
+  }
+
 
   handleFootageResults() {
     let smallSuites = this.state.filteredFootageSmallResults
     let mediumSuites = this.state.filteredFootageMediumResults
     let bigSuites = this.state.filteredFootageBigResults
+    console.log(this.state.filteredFootageSmallResults)
+    console.log(this.state.filteredFootageMediumResults)
+    console.log(this.state.filteredFootageBigResults)
     let finalFootageSuites =[...smallSuites||[], ...mediumSuites||[], ...bigSuites||[]]
+    console.log(finalFootageSuites)
 
     this.setState ({
       filteredFootageResults: finalFootageSuites
@@ -182,18 +213,13 @@ class App extends Component {
   }
    
   finalFilter() {
-    console.log(this.state.currentFootageFilters)
-    console.log(this.state.filteredBedResults)
-    console.log(this.state.filteredFootageResults)
-    console.log(this.state.currentBedroomFilters)
-
-    if (this.state.currentFootageFilters > 0 && this.state.filteredBedResults != null) {
+    if (this.state.currentFootageFilters.length > 0 && this.state.filteredBedResults != null) {
       let finalResultsCombined = []
       finalResultsCombined = this.state.currentBedroomFilters.flatMap(id => this.state.filteredFootageResults.filter(result => result.fields.rooms === id))
       this.setState({
         filteredResults: finalResultsCombined
       })
-    } else if (this.state.currentFootageFilters > 0) {
+    } else if (this.state.currentFootageFilters.length > 0) {
       this.setState ({
         filteredResults: this.state.filteredFootageResults
       })
@@ -214,7 +240,6 @@ class App extends Component {
   const { suites } = this.state
   //this is the way how to do it with hooks
   // const [state, setState] = useState()
-
   console.log(this.state.filteredResults)
     
   return (
