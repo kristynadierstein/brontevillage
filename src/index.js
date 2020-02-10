@@ -7,12 +7,11 @@ import './styles/custom-bootstrap.scss';
 import './styles//main.scss';
 
 //import fonts
-import './fonts/Montserrat-Light.ttf';
-import './fonts/Montserrat-LightItalic.ttf';
-import './fonts/Montserrat-Regular.ttf';
-import './fonts/Unna-Italic.ttf';
-import './fonts/Unna-Regular.ttf';
-
+import './assets/fonts/Montserrat-Light.ttf';
+import './assets/fonts/Montserrat-LightItalic.ttf';
+import './assets/fonts/Montserrat-Regular.ttf';
+import './assets/fonts/Unna-Italic.ttf';
+import './assets/fonts/Unna-Regular.ttf';
 
 
 import App from './App';
