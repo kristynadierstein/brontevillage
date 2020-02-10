@@ -6,8 +6,10 @@ import SuiteCard from '../../components/SuiteCard';
 class MainPage extends React.Component {
   constructor (props) {
     super(props);
+    // const { suitesList } = this.props;
     this.state = {
       suites: null,
+      // suites: suitesList,
       currentBedroomFilters: [], 
       filteredBedResults: null, 
       currentFootageFilters: [],
@@ -15,7 +17,8 @@ class MainPage extends React.Component {
       filteredFootageMediumResults: [],
       filteredFootageBigResults:  [], 
       filteredFootageResults: null,
-      filteredResults: null 
+      filteredResults: null, 
+      // filteredResults: suitesList
     };
 
     this.handleToggle = this.handleToggle.bind(this)
