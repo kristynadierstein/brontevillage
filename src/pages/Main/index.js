@@ -6,10 +6,8 @@ import SuiteCard from '../../components/SuiteCard';
 class MainPage extends React.Component {
   constructor (props) {
     super(props);
-    // const { suitesList } = this.props;
     this.state = {
       suites: null,
-      // suites: suitesList,
       currentBedroomFilters: [], 
       filteredBedResults: null, 
       currentFootageFilters: [],
@@ -18,7 +16,6 @@ class MainPage extends React.Component {
       filteredFootageBigResults:  [], 
       filteredFootageResults: null,
       filteredResults: null, 
-      // filteredResults: suitesList
     };
 
     this.handleToggle = this.handleToggle.bind(this)
@@ -32,18 +29,13 @@ class MainPage extends React.Component {
     this.handleBigFootage = this.handleBigFootage.bind(this)
   }
 
-  componentDidMount (){
-    fetch('https://api.airtable.com/v0/appcGhlPGfDOCALss/Suites?api_key=keyItT7KyJ8jjlQyQ')
-    .then((resp) => resp.json())
-    .then(data => {
+  componentWillReceiveProps(newProps){
       this.setState({
-        suites: data.records,
-        filteredResults: data.records
+        suites: newProps.suitesList,
+        filteredResults: newProps.suitesList
+      }, () => {
+        console.log(this.state.suites, this.state.filteredResults)
       });
-    }).catch(err => {
-      // Error :()
-      console.log(err);
-    });
   }
 
   //STEP I  
@@ -230,13 +222,12 @@ class MainPage extends React.Component {
 
     
   render(){
-    // console.log('MAIN PAGE - "suiteList" inherited from App.js:', this.props.suitesList);
+    console.log('MAIN PAGE - "suiteList" inherited from App.js:', this.props.suitesList);
 
 	  // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
 	  const { suites } = this.state
 	  //this is the way how to do it with hooks
 	  // const [state, setState] = useState()
-	  console.log('MAIN PAGE - suites fetched from API call in this component:', this.state.filteredResults)
 	    
 	  return (
 	    <React.Fragment>
