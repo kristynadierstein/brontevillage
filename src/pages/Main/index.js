@@ -29,13 +29,15 @@ class MainPage extends React.Component {
     this.handleBigFootage = this.handleBigFootage.bind(this)
   }
 
-  componentWillReceiveProps(newProps){
+  componentDidUpdate(){
+    if (this.state.suites != this.props.suitesList){
       this.setState({
-        suites: newProps.suitesList,
-        filteredResults: newProps.suitesList
+        suites: this.props.suitesList,
+        filteredResults: this.props.suitesList
       }, () => {
-        console.log(this.state.suites, this.state.filteredResults)
+        console.log("loaded suites from App.js: ", this.state.suites, this.state.filteredResults)
       });
+    } 
   }
 
   //STEP I  
