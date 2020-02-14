@@ -4,12 +4,18 @@ body {
   font-family: $montserrat-regular;
   a {
     color: $fontGoldDark;
+    text-decoration: none!important;
+    
+  }
+  a:hover {
+    color: $linkOnHover!important;
   }
 }
 
 .flex-row {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 .flex-column {
