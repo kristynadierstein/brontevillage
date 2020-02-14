@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.scss';
+// import './index.scss';
 import FilterBar from '../../components/FilterBar';
 import SuiteCard from '../../components/SuiteCard';
 
@@ -229,7 +229,9 @@ class MainPage extends React.Component {
 	  // destructuring  => "suites" were not defined, so we need to crete a const inside render, in order to avoid creating many constants we just use  the below, curly brackets can be even empty and just declzre this.state
 	  const { suites } = this.state
 	  //this is the way how to do it with hooks
-	  // const [state, setState] = useState()
+    // const [state, setState] = useState()
+    
+    console.log("Showing final results after filter:", this.state.filteredResults)
 	    
 	  return (
 	    <React.Fragment>

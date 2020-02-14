@@ -1,0 +1,50 @@
+.filter {
+  height: 200px;
+  width:100%;
+  background-color: $backgroundBlueDark;
+  margin-bottom:50px;
+  span {
+    font-family: $unna-regular;
+    text-transform: uppercase;
+    letter-spacing: .1rem;
+    color: white;
+  }
+  h3 {
+    color: white;
+  }
+}
+
+.filter-margins {
+  margin-left:130px;
+}
+
+input[type=checkbox] {
+  position: relative;
+  cursor: pointer;
+  margin-right: 15px;
+  margin-bottom: 3px;
+}
+input[type=checkbox]:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 0;
+  left: 0;
+  border: 1px solid white;
+  border-radius: 0px;
+  background-color: #1c2f40;
+}
+input[type=checkbox]:checked:after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 1px 1px 0;
+  transform: rotate(45deg);
+  position: absolute;
+  top: 2px;
+  left: 6px;
+}

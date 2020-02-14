@@ -13,7 +13,7 @@ const FilterBar = props => {
 
   return (
     <React.Fragment>
-      <div className="filter flex-row">  
+      <div className="test-filter filter flex-row">  
         <div className="flex-column">
           <h1> Find your home </h1>
         </div>

@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-// Images
-import Logo from "./assets/images/Logo_Bronte_Village.png";
+
+//import styling
+import '../src/styles/main.scss';
+
 // Pages
 import MainPage from './pages/Main';
 import SuitePage from './pages/Suite';
+import Navbar from './components/NavBar';
+
 
 function App() {
   const [suites, setSuites] = useState();
@@ -29,24 +33,7 @@ function App() {
   return (
     <React.Fragment>
       {/* Navbar */}
-      <nav className="navbar">     
-        <a
-          className="navbar-brand"
-          href="https://www.brontevillageapartments.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src={Logo}
-            alt="Logo"
-            style={{
-              width:'150px',
-              marginLeft: '15px'
-            }}
-          />
-        </a>
-      </nav>
-
+        <Navbar />
       {/* Router */}
       <BrowserRouter>
         <Switch>
