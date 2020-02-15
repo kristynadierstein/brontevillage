@@ -1,5 +1,5 @@
 import React from 'react';
-// import './index.scss';
+
 import FilterBar from '../../components/FilterBar';
 import SuiteCard from '../../components/SuiteCard';
 
@@ -29,6 +29,8 @@ class MainPage extends React.Component {
     this.handleBigFootage = this.handleBigFootage.bind(this)
   }
 
+
+  //load all suites from App.js parent:
   componentDidUpdate(){
     if (this.state.suites != this.props.suitesList){
       this.setState({
@@ -40,7 +42,7 @@ class MainPage extends React.Component {
     } 
   }
 
-  //STEP I  
+  //STEP 1 AFTER CHECKBOX CLICK: differentiate filter toggled
   handleToggle(e) {
     const { name } = e.target
     if (name.includes('bedroom')) {  
@@ -50,8 +52,10 @@ class MainPage extends React.Component {
     }
   }  
   
+  //BED-ROOMS: handle bedroom filter => create an array currentBedroomFilters with all active filters
   handleToggleBedrooms(e) {
     const { id, checked } = e.target
+    //remove toggled id from the array if not checked or unchecked
     if (this.state.currentBedroomFilters.includes(id) && !checked) {
       const bedroomFilterIds = this.state.currentBedroomFilters.filter(filters => filters !== id)
       this.setState({
@@ -60,7 +64,9 @@ class MainPage extends React.Component {
         this.toggleCheckedBedFilter()
         }
       )
-    } else {
+    } 
+    // add the filter if not present inside the active currentBedroomFilters
+    else {
     const bedroomFilterIds = this.state.currentBedroomFilters.concat(id)
     this.setState({
       currentBedroomFilters: bedroomFilterIds
@@ -70,6 +76,28 @@ class MainPage extends React.Component {
     )};
   }
 
+  // BED-ROOMS: once we setup the array with all active filters we proceed to  filter the BED results matching those ids: 
+  toggleCheckedBedFilter() {
+    if (this.state.currentBedroomFilters.length > 0) {
+      let results = []
+      results = this.state.currentBedroomFilters.flatMap(id => 
+        this.state.suites.filter(suite => suite.fields.rooms === id))
+        this.setState({
+          filteredBedResults: results
+        }, () => {
+          this.finalFilter()
+        })
+      } else if (this.state.currentBedroomFilters.length === 0) {
+      console.log("displaying no filter for bedrooms:",this.state.suites)
+      this.setState({
+        filteredBedResults: this.state.suites
+      }, () => {
+        this.finalFilter()
+      })
+    }
+  }
+  
+  //FOOTAGE: handle footage filter => create an array currentFootageFilters with all active filters
   handleToggleFootage(e) {
     const { id, checked } = e.target
     let idInt = parseInt(id, 10)
@@ -91,26 +119,7 @@ class MainPage extends React.Component {
     )};
   }
 
-  toggleCheckedBedFilter() {
-    if (this.state.currentBedroomFilters.length > 0) {
-      let results = []
-      results = this.state.currentBedroomFilters.flatMap(id => 
-       this.state.suites.filter(suite => suite.fields.rooms === id))
-        this.setState({
-          filteredBedResults: results
-        }, () => {
-        this.finalFilter()
-        })
-    } else {
-      this.setState({
-        filteredBedResults: this.state.suites,
-        currentBedroomFilter: null
-      }, () => {
-        this.finalFilter()
-      })
-    }
-  }
-
+ // FOOTAGE: filtering FOOTAGE suites matching the selected ids:  
   toggleCheckedFootage(id, checked) {
     if (this.state.currentFootageFilters.length > 0) {      
       if (id === "600"){
@@ -123,7 +132,6 @@ class MainPage extends React.Component {
         this.handleBigFootage(checked)
       }
     } else {
-      // Show all suites if unchecked
       this.setState({
         filteredFootageResults: this.state.suites,
       }, () => {
@@ -132,6 +140,7 @@ class MainPage extends React.Component {
     }
   }
 
+  //FOOTAGE: create separate arrays with selected suites' sizes
   handleSmallFootage(checked) {
     if (checked) {
       let resultsSmall = []
@@ -186,6 +195,7 @@ class MainPage extends React.Component {
     }
   }
 
+  // FOOTAGE: merge all the selected sizes into one array 
   handleFootageResults() {
     let smallSuites = this.state.filteredFootageSmallResults
     let mediumSuites = this.state.filteredFootageMediumResults
@@ -200,18 +210,19 @@ class MainPage extends React.Component {
     })
   }
    
+  // FOOTAGE & BED-ROOMS: merge all results into one array with unique values which are to be displayed in cards
   finalFilter() {
-    if (this.state.currentFootageFilters.length > 0 && this.state.filteredBedResults != null) {
+    if (this.state.currentFootageFilters.length !== 0 && this.state.currentBedroomFilters.length !== 0) {
       let finalResultsCombined = []
       finalResultsCombined = this.state.currentBedroomFilters.flatMap(id => this.state.filteredFootageResults.filter(result => result.fields.rooms === id))
       this.setState({
         filteredResults: finalResultsCombined
       })
-    } else if (this.state.currentFootageFilters.length > 0) {
+    } else if (this.state.currentFootageFilters.length !== 0) {
       this.setState ({
         filteredResults: this.state.filteredFootageResults
       })
-    } else if (this.state.filteredBedResults != null) {
+    } else if (this.state.currentBedroomFilters.length !== 0) {
       this.setState({
         filteredResults: this.state.filteredBedResults
       })
@@ -231,7 +242,7 @@ class MainPage extends React.Component {
 	  //this is the way how to do it with hooks
     // const [state, setState] = useState()
     
-    console.log("Showing final results after filter:", this.state.filteredResults)
+    console.log("Showing final results to be displayed in cards after filter:", this.state.filteredResults)
 	    
 	  return (
 	    <React.Fragment>
