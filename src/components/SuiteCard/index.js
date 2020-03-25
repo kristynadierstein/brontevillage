@@ -10,7 +10,7 @@ const SuiteCard = props => (
           <Link to={`/suites/${props.id}`}>
             <img
               className="card-img-top"
-              src="https://via.placeholder.com/362x200"
+              src={props.plan[0].url}
               alt="Suite card"
             />
             <div className="card-body">
@@ -28,7 +28,7 @@ const SuiteCard = props => (
           <Link to={`/suites/${props.id}`}>
             <img
               className="card-img-top"
-              src="https://via.placeholder.com/362x200"
+              src={props.plan[0].url}
               alt="Suite card"
             />
             <div className="card-body">
@@ -46,7 +46,7 @@ const SuiteCard = props => (
           <Link to={`/suites/${props.id}`}>
             <img
               className="card-img-top"
-              src="https://via.placeholder.com/362x200"
+              src={props.plan[0].url}
               alt="Suite card"
             />
             <div className="card-body">
@@ -64,7 +64,7 @@ const SuiteCard = props => (
           <Link to={`/suites/${props.id}`}>
             <img
               className="card-img-top"
-              src="https://via.placeholder.com/362x200"
+              src={props.plan[0].url}
               alt="Suite card"
             />
             <div className="card-body">

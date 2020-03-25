@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
+
 //import styling
 import '../src/styles/main.scss';
 
 // Pages
 import MainPage from './pages/Main';
 import SuitePage from './pages/Suite';
-import Navbar from './components/NavBar';
+
 
 
 function App() {
@@ -32,8 +33,6 @@ function App() {
 
   return (
     <React.Fragment>
-      {/* Navbar */}
-        <Navbar />
       {/* Router */}
       <BrowserRouter>
         <Switch>

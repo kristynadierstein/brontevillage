@@ -22,7 +22,7 @@ const FilterBar = props => {
           {/* Bedroom filter */}
           <div className="flex-row align-items-center filter-margins" >
             <h3 style={{width:20 + '%'}}>Room type</h3>
-              <div className="flex-column">
+              <div className="flex-column-filters">
                 <ul>
                   {distinctBedrooms.map(distinctBedroom => 
                     <li className="checkbox-list" key={distinctBedroom}>
@@ -44,7 +44,7 @@ const FilterBar = props => {
             {/* Square footage filters */}
           <div className="flex-row align-items-center filter-margins" >
             <h3 style={{width:20 + '%'}}>Square footage</h3>
-            <div className="flex-column">
+            <div className="flex-column-filters">
               <ul>
                 <li className="checkbox-list">
                   <input
