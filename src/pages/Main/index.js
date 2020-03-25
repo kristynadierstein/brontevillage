@@ -33,6 +33,7 @@ class MainPage extends React.Component {
 
   //load all suites from App.js parent:
   componentDidUpdate() {
+    console.log('component updated')
     if (this.state.suites !== this.props.suitesList) {
       this.setState(
         {
@@ -318,7 +319,7 @@ class MainPage extends React.Component {
       "Showing final results to be displayed in cards after filter:",
       this.state.filteredResults
     );
-
+      console.log(suites)
     return (
       <React.Fragment>
         {/* Navbar */}

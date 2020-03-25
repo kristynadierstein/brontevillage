@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./index.scss";
 import { useRouteMatch, Link } from "react-router-dom";
 import Navbar from "../../components/NavBar";
@@ -11,38 +11,23 @@ const SuitePage = props => {
     props.suitesList
   );
 
-  const [suiteSingle, setSuite] = useState(null);
-
-  useEffect(() => {
-    if (props.suitesList) {
-      var single = props.suitesList.find(suite => (suite.fields.id = suiteId));
-      console.log(single);
-    }
-    return () => {
-      setSuite(single);
-    };
-  }, [suiteSingle, props.suitesList, suiteId]);
-
-  console.log(suiteSingle);
-
-  // if (props.suitesList) {
-  //   var single = props.suitesList.find(
-  //     suite => (suite.fields.id = suiteId)
-  // 	);
-  // 	console.log(single)
-  // 	console.log(suiteSingle)
-  // }, setSuite(single)
+  const singleSuite =
+    props.suitesList &&
+    props.suitesList.find(suite => (suite.fields.id = suiteId));
+  console.log(singleSuite);
 
   return (
     <div>
       <Navbar />
       {/* Title */}
+      <div>{singleSuite ? singleSuite.fields.id : "loading"}</div>
       <div className="container-single-suite">
         <div className="container-single-plan"></div>
         <h1>Details for Suite #{suiteId}</h1>
         <br />
         {/* Link to homepage */}
-        <Link to="/">Back to all suites</Link>
+        <a href='/'>Back to all suites</a>
+        {/* <Link to="/">Back to all suites</Link> */}
       </div>
     </div>
   );
